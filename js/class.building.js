@@ -17,3 +17,54 @@
  *        resident remaining in the building.
  * - listAllResidents() for the Citizen Directory.
  */
+
+export default class Building {
+    constructor(name, capacity) {
+        this.name = name;
+        this.capacity = capacity;
+        this.residents = [];
+    }
+
+    addResident(citizen) {
+        if (this.residents.length < this.capacity) {
+            this.residents.push(citizen);
+            citizen.home = this.name;
+            return true;
+        } else
+            return this.makeSpaceFor(citizen);
+    }
+
+    findLowestResident() {
+        if (this.residents.length) {
+            let lowestResident = this.residents[0];
+            for (const resident of this.residents) {
+                if (resident.rank > lowestResident.rank)
+                    lowestResident = resident;
+            }
+            return lowestResident;
+        }
+    }
+
+
+    makeSpaceFor(citizen) {
+        let lowest = this.findLowestResident();
+        if (citizen.rank < lowest.rank) {
+            this.removeResident(lowest);
+            this.addResident(citizen);
+            return true;
+        }
+        return false;
+    }
+
+    removeResident(citizen) {
+        this.residents.splice(this.residents.indexOf(citizen), 1); //löscht entsprechenden Eintrag aus dem ARRAY
+        citizen.home = null;
+    }
+
+    listAllResidents() {
+        console.log("%c Residents of " + this.name + "(" + this.residents.length + "/" + this.capacity + "):", "background-color: #a3e77..."); // Hab hier this.residents.length genommen, sieht schöner aus!
+        for (const resident of this.residents) {
+            console.log(String(resident));
+        }
+    }
+}
